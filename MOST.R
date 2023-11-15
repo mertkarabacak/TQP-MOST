@@ -9,10 +9,9 @@ library(dplyr)
 library(DescTools)
 library(PRROC)
 library(ggplot2)
-library(rvest)
 
 
-set.seed(31)
+set.seed(42)
 
 
 #PRIMARY ANALYSIS
@@ -26,45 +25,45 @@ class(validation_data) <- "data.frame"
 test_data <- read_csv("Data/final_data_test.csv")
 class(test_data) <- "data.frame"
 
-training_data$"GCS - Motor"  <- as.factor(training_data$"GCS - Motor")
-training_data$"GCS - Verbal"  <- as.factor(training_data$"GCS - Verbal")
-training_data$"GCS - Eye"  <- as.factor(training_data$"GCS - Eye")
-training_data$"Pupillary Response"  <- as.factor(training_data$"Pupillary Response")
+training_data$"GCS - Motor"  <- factor(training_data$"GCS - Motor", levels = c('None', 'Extension', 'Abnormal flexion', 'Normal flexion', 'Localizing', 'Obeys commands'))
+training_data$"GCS - Verbal"  <- factor(training_data$"GCS - Verbal", levels = c('Intubated','None', 'Sounds', 'Words', 'Confused', 'Oriented'))
+training_data$"GCS - Eye"  <- factor(training_data$"GCS - Eye", levels = c('None', 'To pressure', 'To sound', 'Spontaneous'))
+training_data$"Pupillary Response"  <- factor(training_data$"Pupillary Response", levels = c('Neither reactive', 'One reactive', 'Both reactive'))
 
-validation_data$"GCS - Motor"  <- as.factor(validation_data$"GCS - Motor")
-validation_data$"GCS - Verbal"  <- as.factor(validation_data$"GCS - Verbal")
-validation_data$"GCS - Eye"  <- as.factor(validation_data$"GCS - Eye")
-validation_data$"Pupillary Response"  <- as.factor(validation_data$"Pupillary Response")
+validation_data$"GCS - Motor"  <- factor(validation_data$"GCS - Motor", levels = c('None', 'Extension', 'Abnormal flexion', 'Normal flexion', 'Localizing', 'Obeys commands'))
+validation_data$"GCS - Verbal"  <- factor(validation_data$"GCS - Verbal", levels = c('Intubated','None', 'Sounds', 'Words', 'Confused', 'Oriented'))
+validation_data$"GCS - Eye"  <- factor(validation_data$"GCS - Eye", levels = c('None', 'To pressure', 'To sound', 'Spontaneous'))
+validation_data$"Pupillary Response"  <- factor(validation_data$"Pupillary Response")
 
-test_data$"GCS - Motor"  <- as.factor(test_data$"GCS - Motor")
-test_data$"GCS - Verbal"  <- as.factor(test_data$"GCS - Verbal")
-test_data$"GCS - Eye"  <- as.factor(test_data$"GCS - Eye")
-test_data$"Pupillary Response"  <- as.factor(test_data$"Pupillary Response")
+test_data$"GCS - Motor"  <- factor(test_data$"GCS - Motor", levels = c('None', 'Extension', 'Abnormal flexion', 'Normal flexion', 'Localizing', 'Obeys commands'))
+test_data$"GCS - Verbal"  <- factor(test_data$"GCS - Verbal", levels = c('Intubated', 'None', 'Sounds', 'Words', 'Confused', 'Oriented'))
+test_data$"GCS - Eye"  <- factor(test_data$"GCS - Eye", levels = c('None', 'To pressure', 'To sound', 'Spontaneous'))
+test_data$"Pupillary Response"  <- factor(test_data$"Pupillary Response", levels = c('Neither reactive', 'One reactive', 'Both reactive'))
 
-train_set_oM <- training_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label_oM")]
-colnames(train_set_oM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score","label")
+train_set_oM <- training_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label_oM")]
+colnames(train_set_oM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score","label")
 check_data(train_set_oM)
-validation_set_oM <- validation_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label_oM")]
-colnames(validation_set_oM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label")
+validation_set_oM <- validation_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label_oM")]
+colnames(validation_set_oM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label")
 check_data(validation_set_oM)
-test_set_oM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label_oM")]
-colnames(test_set_oM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label")
+test_set_oM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label_oM")]
+colnames(test_set_oM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label")
 check_data(test_set_oM)
 
-test_set_threedM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label_threedM")]
-colnames(test_set_threedM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label")
+test_set_threedM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label_threedM")]
+colnames(test_set_threedM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label")
 check_data(test_set_threedM)
 
-test_set_sevendM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label_sevendM")]
-colnames(test_set_sevendM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label")
+test_set_sevendM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label_sevendM")]
+colnames(test_set_sevendM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label")
 check_data(test_set_sevendM)
 
-test_set_fourteendM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label_fourteendM")]
-colnames(test_set_fourteendM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label")
+test_set_fourteendM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label_fourteendM")]
+colnames(test_set_fourteendM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label")
 check_data(test_set_fourteendM)
 
-test_set_thirtydM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label_thirtydM")]
-colnames(test_set_thirtydM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "CRASH Score", "IMPACT Score", "label")
+test_set_thirtydM <- test_data[c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label_thirtydM")]
+colnames(test_set_thirtydM) <- c("Age", "GCS - Motor", "GCS - Verbal", "GCS - Eye", "Pupillary Response", "TBI Severity", "CRASH Score", "IMPACT Score", "label")
 check_data(test_set_thirtydM)
 
 
@@ -93,8 +92,6 @@ scoring_table <- AutoScore_fine_tuning(
   final_variables = final_variables, cut_vec = cut_vec, max_score = 100
 )
 
-scoring_table_df <- data.frame(Score = scoring_table, RowName = names(scoring_table))
-write_csv(scoring_table_df, "Results/Scoring Table.csv")
 
 #Testing for oM.
 pred_score_oM <- AutoScore_testing(
@@ -390,12 +387,6 @@ ROC_CRASH_thirtydM <- roc(test_set_thirtydM$label, test_set_thirtydM$"CRASH Scor
 ROC_IMPACT_thirtydM <- roc(test_set_thirtydM$label, test_set_thirtydM$"IMPACT Score")
 
 
-# Calculate precision-recall curves (thirtydM).
-PR_AutoScore_thirtydM <- pr.curve(scores.class0 = test_set_thirtydM$"AutoScore Score", weights.class0 = test_set_thirtydM$label, curve=TRUE)
-PR_CRASH_thirtydM <- pr.curve(scores.class0 = test_set_thirtydM$"CRASH Score", weights.class0 = test_set_thirtydM$label, curve=TRUE)
-PR_IMPACT_thirtydM <- pr.curve(scores.class0 = test_set_thirtydM$"IMPACT Score", weights.class0 = test_set_thirtydM$label, curve=TRUE)
-
-
 #Calculate performance metrics (thirtydM).
 auc_AutoScore_thirtydM <- unname(ci.auc(ROC_AutoScore_thirtydM, conf.level=0.95)[c(2, 1, 3)])
 auc_AutoScore_thirtydM <- sprintf("%.3f (%.3f - %.3f)", auc_AutoScore_thirtydM[1], auc_AutoScore_thirtydM[2], auc_AutoScore_thirtydM[3])
@@ -493,7 +484,7 @@ thirtydM_comparison <- as.data.frame(thirtydM_comparison)
 
 #Merge comparisons.
 among_comparison <- cbind(oM_comparison, threedM_comparison, sevendM_comparison, fourteendM_comparison, thirtydM_comparison)
-write.csv(among_comparison, "Results/Model Comparison (DeLong Test).csv")
+write.csv(among_comparison, "Results/Model Comparison.csv")
 
 
 #Calibration analysis for overall mortality.
@@ -622,27 +613,263 @@ brier_IMPACT_thirtydM <- sprintf("%.5f", brier_IMPACT_thirtydM)
 
 #Merge performance metrics.
 perf_AutoScore_oM <- data.frame(Outcome = 'Overall Mortality', Model = 'AutoScore', AUROC = auc_AutoScore_oM, Accuracy = acc_AutoScore_oM, Sensitivity = sen_AutoScore_oM, Specificity = spe_AutoScore_oM, 'Brier Score' = brier_AutoScore_oM)
-perf_CRASH_oM <- data.frame(Outcome = 'Overall Mortality', Model = 'CRASH', AUROC = auc_CRASH_oM, Accuracy = acc_CRASH_oM, Sensitivity = sen_CRASH_oM, Specificity = spe_CRASH_oM, 'Brier Score' = brier_CRASH_oM)
+perf_CRASH_oM <- data.frame(Outcome = 'Overall Mortality', Model = 'CRASH', AUROC = auc_CRASH_oM, Accuracy = acc_CRASH_oM, Sensitivity = sen_CRASH_oM, Specificity = spe_CRASH_oM, 'Brier Score' = brier_IMPACT_oM)
 perf_IMPACT_oM <- data.frame(Outcome = 'Overall Mortality', Model = 'IMPACT', AUROC = auc_IMPACT_oM, Accuracy = acc_IMPACT_oM, Sensitivity = sen_IMPACT_oM, Specificity = spe_IMPACT_oM, 'Brier Score' = brier_IMPACT_oM)
 
 perf_AutoScore_threedM <- data.frame(Outcome = '3-Day Mortality', Model = 'AutoScore', AUROC = auc_AutoScore_threedM, Accuracy = acc_AutoScore_threedM, Sensitivity = sen_AutoScore_threedM, Specificity = spe_AutoScore_threedM, 'Brier Score' = brier_AutoScore_threedM)
-perf_CRASH_threedM <- data.frame(Outcome = '3-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_threedM, Accuracy = acc_CRASH_threedM, Sensitivity = sen_CRASH_threedM, Specificity = spe_CRASH_threedM, 'Brier Score' = brier_CRASH_threedM)
+perf_CRASH_threedM <- data.frame(Outcome = '3-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_threedM, Accuracy = acc_CRASH_threedM, Sensitivity = sen_CRASH_threedM, Specificity = spe_CRASH_threedM, 'Brier Score' = brier_IMPACT_threedM)
 perf_IMPACT_threedM <- data.frame(Outcome = '3-Day Mortality', Model = 'IMPACT', AUROC = auc_IMPACT_threedM, Accuracy = acc_IMPACT_threedM, Sensitivity = sen_IMPACT_threedM, Specificity = spe_IMPACT_threedM, 'Brier Score' = brier_IMPACT_threedM)
 
 perf_AutoScore_sevendM <- data.frame(Outcome = '7-Day Mortality', Model = 'AutoScore', AUROC = auc_AutoScore_sevendM, Accuracy = acc_AutoScore_sevendM, Sensitivity = sen_AutoScore_sevendM, Specificity = spe_AutoScore_sevendM, 'Brier Score' = brier_AutoScore_sevendM)
-perf_CRASH_sevendM <- data.frame(Outcome = '7-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_sevendM, Accuracy = acc_CRASH_sevendM, Sensitivity = sen_CRASH_sevendM, Specificity = spe_CRASH_sevendM, 'Brier Score' = brier_CRASH_sevendM)
+perf_CRASH_sevendM <- data.frame(Outcome = '7-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_sevendM, Accuracy = acc_CRASH_sevendM, Sensitivity = sen_CRASH_sevendM, Specificity = spe_CRASH_sevendM, 'Brier Score' = brier_IMPACT_sevendM)
 perf_IMPACT_sevendM <- data.frame(Outcome = '7-Day Mortality', Model = 'IMPACT', AUROC = auc_IMPACT_sevendM, Accuracy = acc_IMPACT_sevendM, Sensitivity = sen_IMPACT_sevendM, Specificity = spe_IMPACT_sevendM, 'Brier Score' = brier_IMPACT_sevendM)
 
 perf_AutoScore_fourteendM <- data.frame(Outcome = '14-Day Mortality', Model = 'AutoScore', AUROC = auc_AutoScore_fourteendM, Accuracy = acc_AutoScore_fourteendM, Sensitivity = sen_AutoScore_fourteendM, Specificity = spe_AutoScore_fourteendM, 'Brier Score' = brier_AutoScore_fourteendM)
-perf_CRASH_fourteendM <- data.frame(Outcome = '14-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_fourteendM, Accuracy = acc_CRASH_fourteendM, Sensitivity = sen_CRASH_fourteendM, Specificity = spe_CRASH_fourteendM, 'Brier Score' = brier_CRASH_fourteendM)
+perf_CRASH_fourteendM <- data.frame(Outcome = '14-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_fourteendM, Accuracy = acc_CRASH_fourteendM, Sensitivity = sen_CRASH_fourteendM, Specificity = spe_CRASH_fourteendM, 'Brier Score' = brier_IMPACT_fourteendM)
 perf_IMPACT_fourteendM <- data.frame(Outcome = '14-Day Mortality', Model = 'IMPACT', AUROC = auc_IMPACT_fourteendM, Accuracy = acc_IMPACT_fourteendM, Sensitivity = sen_IMPACT_fourteendM, Specificity = spe_IMPACT_fourteendM, 'Brier Score' = brier_IMPACT_fourteendM)
 
 perf_AutoScore_thirtydM <- data.frame(Outcome = '30-Day Mortality', Model = 'AutoScore', AUROC = auc_AutoScore_thirtydM, Accuracy = acc_AutoScore_thirtydM, Sensitivity = sen_AutoScore_thirtydM, Specificity = spe_AutoScore_thirtydM, 'Brier Score' = brier_AutoScore_thirtydM)
-perf_CRASH_thirtydM <- data.frame(Outcome = '30-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_thirtydM, Accuracy = acc_CRASH_thirtydM, Sensitivity = sen_CRASH_thirtydM, Specificity = spe_CRASH_thirtydM, 'Brier Score' = brier_CRASH_thirtydM)
+perf_CRASH_thirtydM <- data.frame(Outcome = '30-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_thirtydM, Accuracy = acc_CRASH_thirtydM, Sensitivity = sen_CRASH_thirtydM, Specificity = spe_CRASH_thirtydM, 'Brier Score' = brier_IMPACT_thirtydM)
 perf_IMPACT_thirtydM <- data.frame(Outcome = '30-Day Mortality', Model = 'IMPACT', AUROC = auc_IMPACT_thirtydM, Accuracy = acc_IMPACT_thirtydM, Sensitivity = sen_IMPACT_thirtydM, Specificity = spe_IMPACT_thirtydM, 'Brier Score' = brier_IMPACT_thirtydM)
 
 performance_metrics <- rbind(perf_AutoScore_oM, perf_CRASH_oM, perf_IMPACT_oM, perf_AutoScore_threedM, perf_CRASH_threedM, perf_IMPACT_threedM, perf_AutoScore_sevendM, perf_CRASH_sevendM, perf_IMPACT_sevendM, perf_AutoScore_fourteendM, perf_CRASH_fourteendM, perf_IMPACT_fourteendM, perf_AutoScore_thirtydM, perf_CRASH_thirtydM, perf_IMPACT_thirtydM)
 write.csv(performance_metrics, "Results/Model Performances.csv")
+
+
+#SENSITIVITY ANALYSIS (MILD TBI)
+
+
+#Prepare data.
+mildtbi_test_set_oM <- test_set_oM[test_set_oM$'TBI Severity'=='Mild',] 
+mildtbi_test_set_threedM <- test_set_threedM[test_set_threedM$'TBI Severity'=='Mild',] 
+mildtbi_test_set_sevendM <- test_set_oM[test_set_sevendM$'TBI Severity'=='Mild',] 
+mildtbi_test_set_fourteendM <- test_set_oM[test_set_fourteendM$'TBI Severity'=='Mild',] 
+mildtbi_test_set_thirtydM <- test_set_thirtydM[test_set_thirtydM$'TBI Severity'=='Mild',] 
+
+
+#Calculate ROC curves (oM).
+mildtbi_ROC_AutoScore_oM <- roc(mildtbi_test_set_oM$label, mildtbi_test_set_oM$"AutoScore Score")
+mildtbi_ROC_CRASH_oM <- roc(mildtbi_test_set_oM$label, mildtbi_test_set_oM$"CRASH Score")
+mildtbi_ROC_IMPACT_oM <- roc(mildtbi_test_set_oM$label, mildtbi_test_set_oM$"IMPACT Score")
+
+
+#Calculate performance metrics (oM).
+mildtbi_auc_AutoScore_oM <- unname(ci.auc(mildtbi_ROC_AutoScore_oM, conf.level=0.95)[c(2, 1, 3)])
+mildtbi_auc_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_auc_AutoScore_oM[1], mildtbi_auc_AutoScore_oM[2], mildtbi_auc_AutoScore_oM[3])
+mildtbi_metrics_AutoScore_oM <- ci.coords(mildtbi_ROC_AutoScore_oM, x = "best", transpose = FALSE, input = "threshold", ret = perfmet)
+mildtbi_acc_AutoScore_oM <- mildtbi_metrics_AutoScore_oM$accuracy[c(2, 1, 3)]
+mildtbi_acc_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_acc_AutoScore_oM[1], mildtbi_acc_AutoScore_oM[2], mildtbi_acc_AutoScore_oM[3])
+mildtbi_sen_AutoScore_oM <- mildtbi_metrics_AutoScore_oM$sensitivity[c(2, 1, 3)]
+mildtbi_sen_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_sen_AutoScore_oM[1], mildtbi_sen_AutoScore_oM[2], mildtbi_sen_AutoScore_oM[3])
+mildtbi_spe_AutoScore_oM <- mildtbi_metrics_AutoScore_oM$specificity[c(2, 1, 3)]
+mildtbi_spe_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_spe_AutoScore_oM[1], mildtbi_spe_AutoScore_oM[2], mildtbi_spe_AutoScore_oM[3])
+
+mildtbi_auc_CRASH_oM <- unname(ci.auc(mildtbi_ROC_CRASH_oM, conf.level=0.95)[c(2, 1, 3)])
+mildtbi_auc_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_auc_CRASH_oM[1], mildtbi_auc_CRASH_oM[2], mildtbi_auc_CRASH_oM[3])
+mildtbi_metrics_CRASH_oM <- ci.coords(mildtbi_ROC_CRASH_oM, x = "best", transpose = FALSE, input = "threshold", ret = perfmet)
+mildtbi_acc_CRASH_oM <- mildtbi_metrics_CRASH_oM$accuracy[c(2, 1, 3)]
+mildtbi_acc_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_acc_CRASH_oM[1], mildtbi_acc_CRASH_oM[2], mildtbi_acc_CRASH_oM[3])
+mildtbi_sen_CRASH_oM <- mildtbi_metrics_CRASH_oM$sensitivity[c(2, 1, 3)]
+mildtbi_sen_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_sen_CRASH_oM[1], mildtbi_sen_CRASH_oM[2], mildtbi_sen_CRASH_oM[3])
+mildtbi_spe_CRASH_oM <- mildtbi_metrics_CRASH_oM$specificity[c(2, 1, 3)]
+mildtbi_spe_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_spe_CRASH_oM[1], mildtbi_spe_CRASH_oM[2], mildtbi_spe_CRASH_oM[3])
+
+mildtbi_auc_IMPACT_oM <- unname(ci.auc(mildtbi_ROC_IMPACT_oM, conf.level=0.95)[c(2, 1, 3)])
+mildtbi_auc_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_auc_IMPACT_oM[1], mildtbi_auc_IMPACT_oM[2], mildtbi_auc_IMPACT_oM[3])
+mildtbi_metrics_IMPACT_oM <- ci.coords(mildtbi_ROC_IMPACT_oM, x = "best", transpose = FALSE, input = "threshold", ret = perfmet)
+mildtbi_acc_IMPACT_oM <- mildtbi_metrics_IMPACT_oM$accuracy[c(2, 1, 3)]
+mildtbi_acc_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_acc_IMPACT_oM[1], mildtbi_acc_IMPACT_oM[2], mildtbi_acc_IMPACT_oM[3])
+mildtbi_sen_IMPACT_oM <- mildtbi_metrics_IMPACT_oM$sensitivity[c(2, 1, 3)]
+mildtbi_sen_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_sen_IMPACT_oM[1], mildtbi_sen_IMPACT_oM[2], mildtbi_sen_IMPACT_oM[3])
+mildtbi_spe_IMPACT_oM <- mildtbi_metrics_IMPACT_oM$specificity[c(2, 1, 3)]
+mildtbi_spe_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", mildtbi_spe_IMPACT_oM[1], mildtbi_spe_IMPACT_oM[2], mildtbi_spe_IMPACT_oM[3])
+
+
+#Plot ROC Curves (oM).
+pdf("Figures/ROCs (Sensitivity Analysis - Mild TBI).pdf", width = 9, height = 9)
+par(font.lab=2, xaxs = "i", yaxs = "i", cex.axis=1.5, cex.lab=1.5)
+plot(1, type = "n", xlab = "Specificity", ylab = "Sensitivity", xlim = c(0,1), ylim = c(0,1))
+lines(mildtbi_ROC_AutoScore_oM, col = rgb(red=0, green=0, blue=1, alpha=0.8), lwd=4.0)
+lines(mildtbi_ROC_CRASH_oM, col = rgb(red=1, green=0, blue=0, alpha=0.8), lwd=4.0)
+lines(mildtbi_ROC_IMPACT_oM, col = rgb(red=0, green=1, blue=0, alpha=0.8), lwd=4.0)
+legend(x = 0.01, y = 0.08, paste("The MOST AUROC =", sprintf("%.3f", mildtbi_ROC_AutoScore_oM$auc)), col = "blue", lwd=4.0, bty = "n", cex=1.5, text.font=1)
+legend(x = 0.01, y = 0.17, paste("CRASH AUROC =", sprintf("%.3f", mildtbi_ROC_CRASH_oM$auc)), col = "red", lwd=4.0, bty = "n", cex=1.5, text.font=1)
+legend(x = 0.01, y = 0.125, paste("IMPACT AUROC =", sprintf("%.3f", mildtbi_ROC_IMPACT_oM$auc)), col = "green", lwd=4.0, bty = "n", cex=1.5, text.font=1)
+dev.off()
+
+#Merge performance metrics.
+mildtbi_perf_AutoScore_oM <- data.frame(TBI_Severity = 'Mild', Model = 'AutoScore', AUROC = mildtbi_auc_AutoScore_oM, Accuracy = mildtbi_acc_AutoScore_oM, Sensitivity = mildtbi_sen_AutoScore_oM, Specificity = mildtbi_spe_AutoScore_oM)
+mildtbi_perf_CRASH_oM <- data.frame(TBI_Severity = 'Mild', Model = 'CRASH', AUROC = mildtbi_auc_CRASH_oM, Accuracy = mildtbi_acc_CRASH_oM, Sensitivity = mildtbi_sen_CRASH_oM, Specificity = mildtbi_spe_CRASH_oM)
+mildtbi_perf_IMPACT_oM <- data.frame(TBI_Severity = 'Mild', Model = 'IMPACT', AUROC = mildtbi_auc_IMPACT_oM, Accuracy = mildtbi_acc_IMPACT_oM, Sensitivity = mildtbi_sen_IMPACT_oM, Specificity = mildtbi_spe_IMPACT_oM)
+
+
+#Compare for models for mild TBI.
+mildtbi_oM_AS_vs_CRASH <- roc.test(mildtbi_ROC_AutoScore_oM, mildtbi_ROC_CRASH_oM, method="bootstrap")$p.value
+mildtbi_oM_AS_vs_IMPACT <- roc.test(mildtbi_ROC_AutoScore_oM, mildtbi_ROC_IMPACT_oM, method="bootstrap")$p.value
+mildtbi_oM_CRASH_vs_IMPACT <- roc.test(mildtbi_ROC_CRASH_oM, mildtbi_ROC_IMPACT_oM, method="bootstrap")$p.value
+mildtbi_oM_comparison <- rbind(mildtbi_oM_AS_vs_CRASH, mildtbi_oM_AS_vs_IMPACT, mildtbi_oM_CRASH_vs_IMPACT)
+row.names(mildtbi_oM_comparison) <- c("AutoScore vs. CRASH", "AutoScore vs. IMPACT", "CRASH vs. IMPACT")
+colnames(mildtbi_oM_comparison) <- c("Mild TBI")
+mildtbi_oM_comparison <- as.data.frame(mildtbi_oM_comparison)
+
+
+#SENSITIVITY ANALYSIS (MODERATE TBI)
+
+
+#Prepare data.
+moderatetbi_test_set_oM <- test_set_oM[test_set_oM$'TBI Severity'=='Moderate',] 
+
+
+#Calculate ROC curves (oM).
+moderatetbi_ROC_AutoScore_oM <- roc(moderatetbi_test_set_oM$label, moderatetbi_test_set_oM$"AutoScore Score")
+moderatetbi_ROC_CRASH_oM <- roc(moderatetbi_test_set_oM$label, moderatetbi_test_set_oM$"CRASH Score")
+moderatetbi_ROC_IMPACT_oM <- roc(moderatetbi_test_set_oM$label, moderatetbi_test_set_oM$"IMPACT Score")
+
+
+#Calculate performance metrics (oM).
+moderatetbi_auc_AutoScore_oM <- unname(ci.auc(moderatetbi_ROC_AutoScore_oM, conf.level=0.95)[c(2, 1, 3)])
+moderatetbi_auc_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_auc_AutoScore_oM[1], moderatetbi_auc_AutoScore_oM[2], moderatetbi_auc_AutoScore_oM[3])
+moderatetbi_metrics_AutoScore_oM <- ci.coords(moderatetbi_ROC_AutoScore_oM, x = "best", transpose = FALSE, input = "threshold", ret = perfmet)
+moderatetbi_acc_AutoScore_oM <- moderatetbi_metrics_AutoScore_oM$accuracy[c(2, 1, 3)]
+moderatetbi_acc_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_acc_AutoScore_oM[1], moderatetbi_acc_AutoScore_oM[2], moderatetbi_acc_AutoScore_oM[3])
+moderatetbi_sen_AutoScore_oM <- moderatetbi_metrics_AutoScore_oM$sensitivity[c(2, 1, 3)]
+moderatetbi_sen_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_sen_AutoScore_oM[1], moderatetbi_sen_AutoScore_oM[2], moderatetbi_sen_AutoScore_oM[3])
+moderatetbi_spe_AutoScore_oM <- moderatetbi_metrics_AutoScore_oM$specificity[c(2, 1, 3)]
+moderatetbi_spe_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_spe_AutoScore_oM[1], moderatetbi_spe_AutoScore_oM[2], moderatetbi_spe_AutoScore_oM[3])
+
+moderatetbi_auc_CRASH_oM <- unname(ci.auc(moderatetbi_ROC_CRASH_oM, conf.level=0.95)[c(2, 1, 3)])
+moderatetbi_auc_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_auc_CRASH_oM[1], moderatetbi_auc_CRASH_oM[2], moderatetbi_auc_CRASH_oM[3])
+moderatetbi_metrics_CRASH_oM <- ci.coords(moderatetbi_ROC_CRASH_oM, x = "best", transpose = FALSE, input = "threshold", ret = perfmet)
+moderatetbi_acc_CRASH_oM <- moderatetbi_metrics_CRASH_oM$accuracy[c(2, 1, 3)]
+moderatetbi_acc_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_acc_CRASH_oM[1], moderatetbi_acc_CRASH_oM[2], moderatetbi_acc_CRASH_oM[3])
+moderatetbi_sen_CRASH_oM <- moderatetbi_metrics_CRASH_oM$sensitivity[c(2, 1, 3)]
+moderatetbi_sen_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_sen_CRASH_oM[1], moderatetbi_sen_CRASH_oM[2], moderatetbi_sen_CRASH_oM[3])
+moderatetbi_spe_CRASH_oM <- moderatetbi_metrics_CRASH_oM$specificity[c(2, 1, 3)]
+moderatetbi_spe_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_spe_CRASH_oM[1], moderatetbi_spe_CRASH_oM[2], moderatetbi_spe_CRASH_oM[3])
+
+moderatetbi_auc_IMPACT_oM <- unname(ci.auc(moderatetbi_ROC_IMPACT_oM, conf.level=0.95)[c(2, 1, 3)])
+moderatetbi_auc_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_auc_IMPACT_oM[1], moderatetbi_auc_IMPACT_oM[2], moderatetbi_auc_IMPACT_oM[3])
+moderatetbi_metrics_IMPACT_oM <- ci.coords(moderatetbi_ROC_IMPACT_oM, x = "best", transpose = FALSE, input = "threshold", ret = perfmet)
+moderatetbi_acc_IMPACT_oM <- moderatetbi_metrics_IMPACT_oM$accuracy[c(2, 1, 3)]
+moderatetbi_acc_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_acc_IMPACT_oM[1], moderatetbi_acc_IMPACT_oM[2], moderatetbi_acc_IMPACT_oM[3])
+moderatetbi_sen_IMPACT_oM <- moderatetbi_metrics_IMPACT_oM$sensitivity[c(2, 1, 3)]
+moderatetbi_sen_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_sen_IMPACT_oM[1], moderatetbi_sen_IMPACT_oM[2], moderatetbi_sen_IMPACT_oM[3])
+moderatetbi_spe_IMPACT_oM <- moderatetbi_metrics_IMPACT_oM$specificity[c(2, 1, 3)]
+moderatetbi_spe_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", moderatetbi_spe_IMPACT_oM[1], moderatetbi_spe_IMPACT_oM[2], moderatetbi_spe_IMPACT_oM[3])
+
+
+#Plot ROC Curves (oM).
+pdf("Figures/ROCs (Sensitivity Analysis - Moderate TBI).pdf", width = 9, height = 9)
+par(font.lab=2, xaxs = "i", yaxs = "i", cex.axis=1.5, cex.lab=1.5)
+plot(1, type = "n", xlab = "Specificity", ylab = "Sensitivity", xlim = c(0,1), ylim = c(0,1))
+lines(moderatetbi_ROC_AutoScore_oM, col = rgb(red=0, green=0, blue=1, alpha=0.8), lwd=4.0)
+lines(moderatetbi_ROC_CRASH_oM, col = rgb(red=1, green=0, blue=0, alpha=0.8), lwd=4.0)
+lines(moderatetbi_ROC_IMPACT_oM, col = rgb(red=0, green=1, blue=0, alpha=0.8), lwd=4.0)
+legend(x = 0.01, y = 0.08, paste("The MOST AUROC =", sprintf("%.3f", moderatetbi_ROC_AutoScore_oM$auc)), col = "blue", lwd=4.0, bty = "n", cex=1.5, text.font=1)
+legend(x = 0.01, y = 0.17, paste("CRASH AUROC =", sprintf("%.3f", moderatetbi_ROC_CRASH_oM$auc)), col = "red", lwd=4.0, bty = "n", cex=1.5, text.font=1)
+legend(x = 0.01, y = 0.125, paste("IMPACT AUROC =", sprintf("%.3f", moderatetbi_ROC_IMPACT_oM$auc)), col = "green", lwd=4.0, bty = "n", cex=1.5, text.font=1)
+dev.off()
+
+
+#Merge performance metrics.
+moderatetbi_perf_AutoScore_oM <- data.frame(TBI_Severity = 'Moderate', Model = 'AutoScore', AUROC = moderatetbi_auc_AutoScore_oM, Accuracy = moderatetbi_acc_AutoScore_oM, Sensitivity = moderatetbi_sen_AutoScore_oM, Specificity = moderatetbi_spe_AutoScore_oM)
+moderatetbi_perf_CRASH_oM <- data.frame(TBI_Severity = 'Moderate', Model = 'CRASH', AUROC = moderatetbi_auc_CRASH_oM, Accuracy = moderatetbi_acc_CRASH_oM, Sensitivity = moderatetbi_sen_CRASH_oM, Specificity = moderatetbi_spe_CRASH_oM)
+moderatetbi_perf_IMPACT_oM <- data.frame(TBI_Severity = 'Moderate', Model = 'IMPACT', AUROC = moderatetbi_auc_IMPACT_oM, Accuracy = moderatetbi_acc_IMPACT_oM, Sensitivity = moderatetbi_sen_IMPACT_oM, Specificity = moderatetbi_spe_IMPACT_oM)
+
+
+#Compare for models for moderate TBI.
+moderatetbi_oM_AS_vs_CRASH <- roc.test(moderatetbi_ROC_AutoScore_oM, moderatetbi_ROC_CRASH_oM, method="bootstrap")$p.value
+moderatetbi_oM_AS_vs_IMPACT <- roc.test(moderatetbi_ROC_AutoScore_oM, moderatetbi_ROC_IMPACT_oM, method="bootstrap")$p.value
+moderatetbi_oM_CRASH_vs_IMPACT <- roc.test(moderatetbi_ROC_CRASH_oM, moderatetbi_ROC_IMPACT_oM, method="bootstrap")$p.value
+moderatetbi_oM_comparison <- rbind(moderatetbi_oM_AS_vs_CRASH, moderatetbi_oM_AS_vs_IMPACT, moderatetbi_oM_CRASH_vs_IMPACT)
+row.names(moderatetbi_oM_comparison) <- c("AutoScore vs. CRASH", "AutoScore vs. IMPACT", "CRASH vs. IMPACT")
+colnames(moderatetbi_oM_comparison) <- c("Moderate TBI")
+moderatetbi_oM_comparison <- as.data.frame(moderatetbi_oM_comparison)
+
+
+#SENSITIVITY ANALYSIS (SEVERE TBI)
+
+
+#Prepare data.
+severetbi_test_set_oM <- test_set_oM[test_set_oM$'TBI Severity'=='Severe',] 
+
+
+#Calculate ROC curves (oM).
+severetbi_ROC_AutoScore_oM <- roc(severetbi_test_set_oM$label, severetbi_test_set_oM$"AutoScore Score")
+severetbi_ROC_CRASH_oM <- roc(severetbi_test_set_oM$label, severetbi_test_set_oM$"CRASH Score")
+severetbi_ROC_IMPACT_oM <- roc(severetbi_test_set_oM$label, severetbi_test_set_oM$"IMPACT Score")
+
+
+#Calculate performance metrics (oM).
+severetbi_auc_AutoScore_oM <- unname(ci.auc(severetbi_ROC_AutoScore_oM, conf.level=0.95)[c(2, 1, 3)])
+severetbi_auc_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_auc_AutoScore_oM[1], severetbi_auc_AutoScore_oM[2], severetbi_auc_AutoScore_oM[3])
+severetbi_metrics_AutoScore_oM <- ci.coords(severetbi_ROC_AutoScore_oM, x = "best", transpose = FALSE, input = "threshold", ret = perfmet)
+severetbi_acc_AutoScore_oM <- severetbi_metrics_AutoScore_oM$accuracy[c(2, 1, 3)]
+severetbi_acc_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_acc_AutoScore_oM[1], severetbi_acc_AutoScore_oM[2], severetbi_acc_AutoScore_oM[3])
+severetbi_sen_AutoScore_oM <- severetbi_metrics_AutoScore_oM$sensitivity[c(2, 1, 3)]
+severetbi_sen_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_sen_AutoScore_oM[1], severetbi_sen_AutoScore_oM[2], severetbi_sen_AutoScore_oM[3])
+severetbi_spe_AutoScore_oM <- severetbi_metrics_AutoScore_oM$specificity[c(2, 1, 3)]
+severetbi_spe_AutoScore_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_spe_AutoScore_oM[1], severetbi_spe_AutoScore_oM[2], severetbi_spe_AutoScore_oM[3])
+
+severetbi_auc_CRASH_oM <- unname(ci.auc(severetbi_ROC_CRASH_oM, conf.level=0.95)[c(2, 1, 3)])
+severetbi_auc_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_auc_CRASH_oM[1], severetbi_auc_CRASH_oM[2], severetbi_auc_CRASH_oM[3])
+severetbi_metrics_CRASH_oM <- ci.coords(severetbi_ROC_CRASH_oM, x = "best", transpose = FALSE, input = "threshold", ret = perfmet)
+severetbi_acc_CRASH_oM <- severetbi_metrics_CRASH_oM$accuracy[c(2, 1, 3)]
+severetbi_acc_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_acc_CRASH_oM[1], severetbi_acc_CRASH_oM[2], severetbi_acc_CRASH_oM[3])
+severetbi_sen_CRASH_oM <- severetbi_metrics_CRASH_oM$sensitivity[c(2, 1, 3)]
+severetbi_sen_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_sen_CRASH_oM[1], severetbi_sen_CRASH_oM[2], severetbi_sen_CRASH_oM[3])
+severetbi_spe_CRASH_oM <- severetbi_metrics_CRASH_oM$specificity[c(2, 1, 3)]
+severetbi_spe_CRASH_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_spe_CRASH_oM[1], severetbi_spe_CRASH_oM[2], severetbi_spe_CRASH_oM[3])
+
+severetbi_auc_IMPACT_oM <- unname(ci.auc(severetbi_ROC_IMPACT_oM, conf.level=0.95)[c(2, 1, 3)])
+severetbi_auc_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_auc_IMPACT_oM[1], severetbi_auc_IMPACT_oM[2], severetbi_auc_IMPACT_oM[3])
+severetbi_metrics_IMPACT_oM <- ci.coords(severetbi_ROC_IMPACT_oM, x = "best", transpose = FALSE, input = "threshold", ret = perfmet)
+severetbi_acc_IMPACT_oM <- severetbi_metrics_IMPACT_oM$accuracy[c(2, 1, 3)]
+severetbi_acc_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_acc_IMPACT_oM[1], severetbi_acc_IMPACT_oM[2], severetbi_acc_IMPACT_oM[3])
+severetbi_sen_IMPACT_oM <- severetbi_metrics_IMPACT_oM$sensitivity[c(2, 1, 3)]
+severetbi_sen_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_sen_IMPACT_oM[1], severetbi_sen_IMPACT_oM[2], severetbi_sen_IMPACT_oM[3])
+severetbi_spe_IMPACT_oM <- severetbi_metrics_IMPACT_oM$specificity[c(2, 1, 3)]
+severetbi_spe_IMPACT_oM <- sprintf("%.3f (%.3f - %.3f)", severetbi_spe_IMPACT_oM[1], severetbi_spe_IMPACT_oM[2], severetbi_spe_IMPACT_oM[3])
+
+
+#Plot ROC Curves (oM).
+pdf("Figures/ROCs (Sensitivity Analysis - Severe TBI).pdf", width = 9, height = 9)
+par(font.lab=2, xaxs = "i", yaxs = "i", cex.axis=1.5, cex.lab=1.5)
+plot(1, type = "n", xlab = "Specificity", ylab = "Sensitivity", xlim = c(0,1), ylim = c(0,1))
+lines(severetbi_ROC_AutoScore_oM, col = rgb(red=0, green=0, blue=1, alpha=0.8), lwd=4.0)
+lines(severetbi_ROC_CRASH_oM, col = rgb(red=1, green=0, blue=0, alpha=0.8), lwd=4.0)
+lines(severetbi_ROC_IMPACT_oM, col = rgb(red=0, green=1, blue=0, alpha=0.8), lwd=4.0)
+legend(x = 0.01, y = 0.08, paste("The MOST AUROC =", sprintf("%.3f", severetbi_ROC_AutoScore_oM$auc)), col = "blue", lwd=4.0, bty = "n", cex=1.5, text.font=1)
+legend(x = 0.01, y = 0.17, paste("CRASH AUROC =", sprintf("%.3f", severetbi_ROC_CRASH_oM$auc)), col = "red", lwd=4.0, bty = "n", cex=1.5, text.font=1)
+legend(x = 0.01, y = 0.125, paste("IMPACT AUROC =", sprintf("%.3f", severetbi_ROC_IMPACT_oM$auc)), col = "green", lwd=4.0, bty = "n", cex=1.5, text.font=1)
+dev.off()
+
+
+#Merge performance metrics.
+severetbi_perf_AutoScore_oM <- data.frame(TBI_Severity = 'Severe', Model = 'AutoScore', AUROC = severetbi_auc_AutoScore_oM, Accuracy = severetbi_acc_AutoScore_oM, Sensitivity = severetbi_sen_AutoScore_oM, Specificity = severetbi_spe_AutoScore_oM)
+severetbi_perf_CRASH_oM <- data.frame(TBI_Severity = 'Severe', Model = 'CRASH', AUROC = severetbi_auc_CRASH_oM, Accuracy = severetbi_acc_CRASH_oM, Sensitivity = severetbi_sen_CRASH_oM, Specificity = severetbi_spe_CRASH_oM)
+severetbi_perf_IMPACT_oM <- data.frame(TBI_Severity = 'Severe', Model = 'IMPACT', AUROC = severetbi_auc_IMPACT_oM, Accuracy = severetbi_acc_IMPACT_oM, Sensitivity = severetbi_sen_IMPACT_oM, Specificity = severetbi_spe_IMPACT_oM)
+
+
+#Compare for models for severe TBI.
+severetbi_oM_AS_vs_CRASH <- roc.test(severetbi_ROC_AutoScore_oM, severetbi_ROC_CRASH_oM, method="bootstrap")$p.value
+severetbi_oM_AS_vs_IMPACT <- roc.test(severetbi_ROC_AutoScore_oM, severetbi_ROC_IMPACT_oM, method="bootstrap")$p.value
+severetbi_oM_CRASH_vs_IMPACT <- roc.test(severetbi_ROC_CRASH_oM, severetbi_ROC_IMPACT_oM, method="bootstrap")$p.value
+severetbi_oM_comparison <- rbind(severetbi_oM_AS_vs_CRASH, severetbi_oM_AS_vs_IMPACT, severetbi_oM_CRASH_vs_IMPACT)
+row.names(severetbi_oM_comparison) <- c("AutoScore vs. CRASH", "AutoScore vs. IMPACT", "CRASH vs. IMPACT")
+colnames(severetbi_oM_comparison) <- c("Severe TBI")
+severetbi_oM_comparison <- as.data.frame(severetbi_oM_comparison)
+
+
+#Merge performance metrics from TBI severity sensitivity analyses.
+performance_metrics <- rbind(mildtbi_perf_AutoScore_oM, mildtbi_perf_CRASH_oM, mildtbi_perf_IMPACT_oM, moderatetbi_perf_AutoScore_oM, moderatetbi_perf_CRASH_oM, moderatetbi_perf_IMPACT_oM, severetbi_perf_AutoScore_oM, severetbi_perf_CRASH_oM, severetbi_perf_IMPACT_oM)
+write.csv(performance_metrics, "Results/Model Performances (Sensitivity Analysis - TBI Severity).csv")
+
+
+#Merge comparisons from TBI severity sensitivity analyses.
+tbiseverity_among_comparison <- cbind(mildtbi_oM_comparison, moderatetbi_oM_comparison, severetbi_oM_comparison)
+write.csv(tbiseverity_among_comparison, "Results/Model Comparison (Sensitivity Analysis - TBI Severity.csv")
+
 
 #SENSITIVITY ANALYSIS (CRASH)
 
@@ -710,24 +937,7 @@ dev.off()
 
 #Compare for models for sensitivity analysis (CRASH).
 AS_vs_CRASH_sa_CRASH <- roc.test(ROC_AutoScore_sa_CRASH, ROC_CRASH_sa_CRASH, method="bootstrap")$p.value
-
-
-#Calibration analysis for sensitivity analysis (CRASH).
-test_set_sa_CRASH$'AutoScore Score'<- pred_score_sa_CRASH$pred_score
-log_AutoScore_sa_CRASH <- glm(test_set_sa_CRASH$"label" ~ test_set_sa_CRASH$"AutoScore Score", test_set_sa_CRASH, family = binomial(link = "logit"))
-test_set_sa_CRASH$'AutoScore_probs' <- predict(log_AutoScore_sa_CRASH, test_set_sa_CRASH, type = "response")
-cc_AutoScore_sa_CRASH <- calibration_plot(data = test_set_sa_CRASH, obs = "label", pred = "AutoScore_probs", nTiles = 20)
-ggsave(filename = "Figures/Calibration Plot (AutoScore, Sensitivity Analysis - CRASH).pdf", plot = cc_AutoScore_sa_CRASH$calibration_plot, width = 5, height = 5, dpi = 300)
-
-log_CRASH_sa_CRASH <- glm(test_set_sa_CRASH$"label" ~ test_set_sa_CRASH$"CRASH Score", test_set_sa_CRASH, family = binomial(link = "logit"))
-test_set_sa_CRASH$'CRASH_probs' <- predict(log_CRASH_sa_CRASH, test_set_sa_CRASH, type = "response")
-cc_CRASH_sa_CRASH <- calibration_plot(data = test_set_sa_CRASH, obs = "label", pred = "CRASH_probs")
-ggsave(filename = "Figures/Calibration Plot (CRASH, Sensitivity Analysis - CRASH).pdf", plot = cc_CRASH_sa_CRASH$calibration_plot, width = 5, height = 5, dpi = 300)
-
-brier_AutoScore_sa_CRASH <- BrierScore(test_set_sa_CRASH$label, test_set_sa_CRASH$AutoScore_probs)
-brier_AutoScore_sa_CRASH <- sprintf("%.5f", brier_AutoScore_sa_CRASH)
-brier_CRASH_sa_CRASH <- BrierScore(test_set_sa_CRASH$label, test_set_sa_CRASH$CRASH_probs)
-brier_CRASH_sa_CRASH <- sprintf("%.5f", brier_CRASH_sa_CRASH)
+AS_vs_CRASH_sa_CRASH <- as.data.frame(AS_vs_CRASH_sa_CRASH)
 
 
 #SENSITIVITY ANALYSIS (IMPACT)
@@ -796,81 +1006,20 @@ dev.off()
 
 #Compare for models for sensitivity analysis (IMPACT).
 AS_vs_IMPACT_sa_IMPACT <- roc.test(ROC_AutoScore_sa_IMPACT, ROC_IMPACT_sa_IMPACT, method="bootstrap")$p.value
-
-
-#Calibration analysis for sensitivity analysis (IMPACT).
-test_set_sa_IMPACT$'AutoScore Score'<- pred_score_sa_IMPACT$pred_score
-log_AutoScore_sa_IMPACT <- glm(test_set_sa_IMPACT$"label" ~ test_set_sa_IMPACT$"AutoScore Score", test_set_sa_IMPACT, family = binomial(link = "logit"))
-test_set_sa_IMPACT$'AutoScore_probs' <- predict(log_AutoScore_sa_IMPACT, test_set_sa_IMPACT, type = "response")
-cc_AutoScore_sa_IMPACT <- calibration_plot(data = test_set_sa_IMPACT, obs = "label", pred = "AutoScore_probs", nTiles = 20)
-ggsave(filename = "Figures/Calibration Plot (AutoScore, Sensitivity Analysis - IMPACT).pdf", plot = cc_AutoScore_sa_IMPACT$calibration_plot, width = 5, height = 5, dpi = 300)
-
-log_IMPACT_sa_IMPACT <- glm(test_set_sa_IMPACT$"label" ~ test_set_sa_IMPACT$"IMPACT Score", test_set_sa_IMPACT, family = binomial(link = "logit"))
-test_set_sa_IMPACT$'IMPACT_probs' <- predict(log_IMPACT_sa_IMPACT, test_set_sa_IMPACT, type = "response")
-cc_IMPACT_sa_IMPACT <- calibration_plot(data = test_set_sa_IMPACT, obs = "label", pred = "IMPACT_probs")
-ggsave(filename = "Figures/Calibration Plot (IMPACT, Sensitivity Analysis - IMPACT).pdf", plot = cc_IMPACT_sa_IMPACT$calibration_plot, width = 5, height = 5, dpi = 300)
-
-brier_AutoScore_sa_IMPACT <- BrierScore(test_set_sa_IMPACT$label, test_set_sa_IMPACT$AutoScore_probs)
-brier_AutoScore_sa_IMPACT <- sprintf("%.5f", brier_AutoScore_sa_IMPACT)
-brier_IMPACT_sa_IMPACT <- BrierScore(test_set_sa_IMPACT$label, test_set_sa_IMPACT$IMPACT_probs)
-brier_IMPACT_sa_IMPACT <- sprintf("%.5f", brier_IMPACT_sa_IMPACT)
+AS_vs_IMPACT_sa_IMPACT <- as.data.frame(AS_vs_IMPACT_sa_IMPACT)
 
 
 #Merge performance metrics for sensitivity analyses.
-perf_AutoScore_sa_CRASH <- data.frame(Outcome = '14-Day Mortality', Model = 'AutoScore', AUROC = auc_AutoScore_sa_CRASH, Accuracy = acc_AutoScore_sa_CRASH, Sensitivity = sen_AutoScore_sa_CRASH, Specificity = spe_AutoScore_sa_CRASH, 'Brier Score' = brier_AutoScore_sa_CRASH)
-perf_CRASH_sa_CRASH <- data.frame(Outcome = '14-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_sa_CRASH, Accuracy = acc_CRASH_sa_CRASH, Sensitivity = sen_CRASH_sa_CRASH, Specificity = spe_CRASH_sa_CRASH, 'Brier Score' = brier_CRASH_sa_CRASH)
+perf_AutoScore_sa_CRASH <- data.frame(Outcome = '14-Day Mortality', Model = 'AutoScore', AUROC = auc_AutoScore_sa_CRASH, Accuracy = acc_AutoScore_sa_CRASH, Sensitivity = sen_AutoScore_sa_CRASH, Specificity = spe_AutoScore_sa_CRASH)
+perf_CRASH_sa_CRASH <- data.frame(Outcome = '14-Day Mortality', Model = 'CRASH', AUROC = auc_CRASH_sa_CRASH, Accuracy = acc_CRASH_sa_CRASH, Sensitivity = sen_CRASH_sa_CRASH, Specificity = spe_CRASH_sa_CRASH)
 
-perf_AutoScore_sa_IMPACT <- data.frame(Outcome = 'Overall Mortality', Model = 'AutoScore', AUROC = auc_AutoScore_sa_IMPACT, Accuracy = acc_AutoScore_sa_IMPACT, Sensitivity = sen_AutoScore_sa_IMPACT, Specificity = spe_AutoScore_sa_IMPACT, 'Brier Score' = brier_AutoScore_sa_IMPACT)
-perf_IMPACT_sa_IMPACT <- data.frame(Outcome = 'Overall Mortality', Model = 'IMPACT', AUROC = auc_IMPACT_sa_IMPACT, Accuracy = acc_IMPACT_sa_IMPACT, Sensitivity = sen_IMPACT_sa_IMPACT, Specificity = spe_IMPACT_sa_IMPACT, 'Brier Score' = brier_IMPACT_sa_IMPACT)
+perf_AutoScore_sa_IMPACT <- data.frame(Outcome = 'Overall Mortality', Model = 'AutoScore', AUROC = auc_AutoScore_sa_IMPACT, Accuracy = acc_AutoScore_sa_IMPACT, Sensitivity = sen_AutoScore_sa_IMPACT, Specificity = spe_AutoScore_sa_IMPACT)
+perf_IMPACT_sa_IMPACT <- data.frame(Outcome = 'Overall Mortality', Model = 'IMPACT', AUROC = auc_IMPACT_sa_IMPACT, Accuracy = acc_IMPACT_sa_IMPACT, Sensitivity = sen_IMPACT_sa_IMPACT, Specificity = spe_IMPACT_sa_IMPACT)
 
 performance_metrics <- rbind(perf_AutoScore_sa_CRASH, perf_CRASH_sa_CRASH, perf_AutoScore_sa_IMPACT, perf_IMPACT_sa_IMPACT)
-write.csv(performance_metrics, "Results/Model Performances (Sensitivity Analysis).csv")
+write.csv(performance_metrics, "Results/Model Performances (Sensitivity Analysis - CRASH-IMPACT).csv")
 
 
-#Convert conversion tables to PDFs.
-conversion_table_oM_txt <- read_file("Results/Conversion Table (Overall Mortality).txt")
-conversion_table_oM_html <- read_html(conversion_table_oM_txt)
-conversion_table_oM_html_table <- conversion_table_oM_html %>% html_table()
-conversion_table_oM_data <- conversion_table_oM_html_table[[1]]
-conversion_table_oM_data <- conversion_table_oM_data %>% select(`Score cut-off [>=]`, `Predicted Risk [>=]`, `Accuracy (95% CI)`, `Sensitivity (95% CI)`, `Specificity (95% CI)`)
-write_csv(conversion_table_oM_data, "Results/Conversion Table (Overall Mortality).csv")
-
-conversion_table_threedM_txt <- read_file("Results/Conversion Table (3-Day Mortality).txt")
-conversion_table_threedM_html <- read_html(conversion_table_threedM_txt)
-conversion_table_threedM_html_table <- conversion_table_threedM_html %>% html_table()
-conversion_table_threedM_data <- conversion_table_threedM_html_table[[1]]
-conversion_table_threedM_data <- conversion_table_threedM_data %>% select(`Score cut-off [>=]`, `Predicted Risk [>=]`, `Accuracy (95% CI)`, `Sensitivity (95% CI)`, `Specificity (95% CI)`)
-write_csv(conversion_table_threedM_data, "Results/Conversion Table (3-Day Mortality).csv")
-
-conversion_table_sevendM_txt <- read_file("Results/Conversion Table (7-Day Mortality).txt")
-conversion_table_sevendM_html <- read_html(conversion_table_sevendM_txt)
-conversion_table_sevendM_html_table <- conversion_table_sevendM_html %>% html_table()
-conversion_table_sevendM_data <- conversion_table_sevendM_html_table[[1]]
-conversion_table_sevendM_data <- conversion_table_sevendM_data %>% select(`Score cut-off [>=]`, `Predicted Risk [>=]`, `Accuracy (95% CI)`, `Sensitivity (95% CI)`, `Specificity (95% CI)`)
-write_csv(conversion_table_sevendM_data, "Results/Conversion Table (7-Day Mortality).csv")
-
-conversion_table_fourteendM_txt <- read_file("Results/Conversion Table (14-Day Mortality).txt")
-conversion_table_fourteendM_html <- read_html(conversion_table_fourteendM_txt)
-conversion_table_fourteendM_html_table <- conversion_table_fourteendM_html %>% html_table()
-conversion_table_fourteendM_data <- conversion_table_fourteendM_html_table[[1]]
-conversion_table_fourteendM_data <- conversion_table_fourteendM_data %>% select(`Score cut-off [>=]`, `Predicted Risk [>=]`, `Accuracy (95% CI)`, `Sensitivity (95% CI)`, `Specificity (95% CI)`)
-write_csv(conversion_table_fourteendM_data, "Results/Conversion Table (14-Day Mortality).csv")
-
-conversion_table_thirtydM_txt <- read_file("Results/Conversion Table (30-Day Mortality).txt")
-conversion_table_thirtydM_html <- read_html(conversion_table_thirtydM_txt)
-conversion_table_thirtydM_html_table <- conversion_table_thirtydM_html %>% html_table()
-conversion_table_thirtydM_data <- conversion_table_thirtydM_html_table[[1]]
-conversion_table_thirtydM_data <- conversion_table_thirtydM_data %>% select(`Score cut-off [>=]`, `Predicted Risk [>=]`, `Accuracy (95% CI)`, `Sensitivity (95% CI)`, `Specificity (95% CI)`)
-write_csv(conversion_table_thirtydM_data, "Results/Conversion Table (30-Day Mortality).csv")
-
-
-#Merge conversion tables.
-conversion_table_oM_data$Outcome <- "Overall In-Hospital Mortality"
-conversion_table_threedM_data$Outcome <- "3-Day Mortality"
-conversion_table_sevendM_data$Outcome <- "7-Day Mortality"
-conversion_table_fourteendM_data$Outcome <- "14-Day Mortality"
-conversion_table_thirtydM_data$Outcome <- "30-Day Mortality"
-
-conversion_tables_merged <- rbind(conversion_table_oM_data, conversion_table_threedM_data, conversion_table_sevendM_data, conversion_table_fourteendM_data, conversion_table_thirtydM_data)
-conversion_tables_merged <- conversion_tables_merged %>% select(Outcome, everything())
-write_csv(conversion_tables_merged, "Results/Conversion Tables.csv")
+#Merge comparisons from TBI severity sensitivity analyses.
+sa_among_comparison <- cbind(AS_vs_CRASH_sa_CRASH, AS_vs_IMPACT_sa_IMPACT)
+write.csv(sa_among_comparison, "Results/Model Comparison (Sensitivity Analysis - CRASH-IMPACT).csv")
